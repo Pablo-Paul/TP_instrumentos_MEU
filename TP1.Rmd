@@ -1,0 +1,115 @@
+---
+title: "Trabajo Práctico I"
+author: "Pablo Albornoz"
+date: "Agosto 2023"
+output: html_document
+---
+
+# Trabajo Práctico I
+
+## Departamentos en venta
+
+Activo librerías útiles para el TP: 
+
+```{r}
+library(tidyverse)
+```
+
+### Carga del dataset
+
+Cargamos el dataset obtenido de [BA data](https://data.buenosaires.gob.ar/dataset/departamentos-venta) sobre los departamentos en venta en Buenos Aires en 2020 en el *environment* del proyecto:
+
+```{r}
+departamentos_venta <- read_csv("data/departamentos-en-venta-2020.csv",
+                                col_names = TRUE)
+```
+Visualizamos rápidamente los datos que contiene
+
+```{r}
+summary(departamentos_venta)
+```
+En este dataset, tenemos 156.258 departamentos en ventas en la ciudad de Buenos Aires en 2020.
+
+### Pregunta a responder
+
+De este dataset, nos interesa responder la siguientes pregunta: 
+
+*¿Cuál es el precio promedio en USD de los departamentos de dos ambientes en cada barrio?*
+
+Para ello, primero deberíamos recodificar las columnas de barrio que están cargadas como *"Character"*, a *"Factor"*. Voy a crear un nuevo dataset en el environment, para trabajarlo:
+
+```{r}
+datos <- departamentos_venta %>%
+  mutate(Barrio = as.factor(Barrio))
+```
+
+```{r}
+summary(datos)
+```
+
+Ahora contamos con la cantidad de departamentos por barrio. Por ejemplo, vemos que en Palermo es donde más departamentos en venta habían en 2020, con 21.702 unidades.
+
+```{r}
+colnames(datos)
+```
+
+
+Como nos interesa solamente el dato de las unidades de 2 ambientes, filtramos los datos de la columna "Ambientes", y seleccionamos las columnas que nos resultan relevantes: 
+
+```{r}
+deptos_dos_ambientes <- datos %>% 
+  filter(Ambientes==2) %>% 
+  select(3,5,7,10)
+```
+
+Corroboramos que se filtraron solos los departamentos de dos ambientes: 
+
+```{r}
+unique(deptos_dos_ambientes$Ambientes)
+```
+
+Solo cuenta con el dato de los departamentos de dos ambientes.
+
+```{r}
+summary(deptos_dos_ambientes)
+```
+Aquí vemos, por ejemplo, que el departamento de dos ambientes de menor precio es de 7200 USD, en tanto, el máximo valor es de 1.600.000 USD.
+
+Queremos ahora agrupar estos datos por barrio.
+
+```{r}
+deptos_barrio <- deptos_dos_ambientes %>%
+  mutate(Barrio = str_replace(Barrio, "[æ]", "Ñ")) %>% 
+  mutate(Barrio = str_replace(Barrio, "[?]", "")) %>%
+  group_by(Barrio) %>% 
+  summarise(cantidad_deptos=n(), valor_promedio_usd=mean(Dolares), dolaresM2=mean(DolaresM2)) %>% 
+  mutate(Barrio = as.factor(Barrio))
+```
+
+(*Nota para profesor: tuve un inconveniente para hacer que se lea bien el dato cargado como Nuñez. No pude modificar la codificación, por lo que figura una fila como "NUÑEZ" y otra como "NU?æEZ", por lo tanto utilice el comando de str_replace; solucionó el inconveniente, pero fue muy manual. ¿Cómo puedo evitar este inconviente a futuro?*)
+
+```{r}
+summary(deptos_barrio)
+```
+
+Entonces, ahora podemos ver el valor promedio en dólares de los departamentos de dos ambientes por barrio de la Ciudad de Buenos Aires.
+
+```{r}
+print(deptos_barrio)
+```
+
+## Conclusión
+
+Podemos ver, por ejemplo, que en el año 2020, en el barrio de Agronomúa (con 233 deptos en venta) el valor promedio de un depto de dos ambientes era de 123.404 dólares, mientras que en La Boca era de 76.083 dólares, y en Palermo de 167.991 USD (con 6862 unidades en venta). Puerto Madero es el Barrio que contaba con los departamentos de dos ambientes de mayor valor, cuyo monto ascendía a 468.498 usd.
+
+### Barrios con el valor más alto de departamentos de dos ambientes
+
+```{r}
+  top_n(deptos_barrio, 5, valor_promedio_usd)
+```
+### Barrios con el valor más bajo de departamentos de dos ambientes
+
+```{r}
+slice_min(deptos_barrio, order_by = valor_promedio_usd, n = 5)
+```
+
