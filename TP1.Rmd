@@ -83,7 +83,8 @@ deptos_barrio <- deptos_dos_ambientes %>%
   mutate(Barrio = str_replace(Barrio, "[?]", "")) %>%
   group_by(Barrio) %>% 
   summarise(cantidad_deptos=n(), valor_promedio_usd=mean(Dolares), dolaresM2=mean(DolaresM2)) %>% 
-  mutate(Barrio = as.factor(Barrio))
+  mutate(Barrio = as.factor(Barrio)) %>% 
+  arrange(desc(valor_promedio_usd))
 ```
 
 (*Nota para profesor: tuve un inconveniente para hacer que se lea bien el dato cargado como Nuñez. No pude modificar la codificación, por lo que figura una fila como "NUÑEZ" y otra como "NU?æEZ", por lo tanto utilice el comando de str_replace; solucionó el inconveniente, pero fue muy manual. ¿Cómo puedo evitar este inconviente a futuro?*)

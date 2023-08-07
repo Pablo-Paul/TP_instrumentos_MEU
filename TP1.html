@@ -484,7 +484,8 @@ USD.</p>
   mutate(Barrio = str_replace(Barrio, &quot;[?]&quot;, &quot;&quot;)) %&gt;%
   group_by(Barrio) %&gt;% 
   summarise(cantidad_deptos=n(), valor_promedio_usd=mean(Dolares), dolaresM2=mean(DolaresM2)) %&gt;% 
-  mutate(Barrio = as.factor(Barrio))</code></pre>
+  mutate(Barrio = as.factor(Barrio)) %&gt;% 
+  arrange(desc(valor_promedio_usd))</code></pre>
 <p>(<em>Nota para profesor: tuve un inconveniente para hacer que se lea
 bien el dato cargado como Nuñez. No pude modificar la codificación, por
 lo que figura una fila como “NUÑEZ” y otra como “NU?æEZ”, por lo tanto
@@ -504,18 +505,18 @@ departamentos de dos ambientes por barrio de la Ciudad de Buenos
 Aires.</p>
 <pre class="r"><code>print(deptos_barrio)</code></pre>
 <pre><code>## # A tibble: 52 × 4
-##    Barrio         cantidad_deptos valor_promedio_usd dolaresM2
-##    &lt;fct&gt;                    &lt;int&gt;              &lt;dbl&gt;     &lt;dbl&gt;
-##  1 AGRONOMIA                  233            123404.     2532.
-##  2 ALMAGRO                   2963            121609.     2703.
-##  3 BALVANERA                 2355             96999.     2243.
-##  4 BARRACAS ESTE              693            140141.     2556.
-##  5 BARRACAS OESTE               3             40000      1333 
-##  6 BELGRANO                  3356            173970.     3638.
-##  7 BOCA                       319             76084.     1775.
-##  8 BOEDO                      620            102089.     2308.
-##  9 CABALLITO                 3298            133771.     2863.
-## 10 CHACARITA                  655            130467.     2758.
+##    Barrio        cantidad_deptos valor_promedio_usd dolaresM2
+##    &lt;fct&gt;                   &lt;int&gt;              &lt;dbl&gt;     &lt;dbl&gt;
+##  1 PUERTO MADERO             517            468499.     6319.
+##  2 NUÑEZ                    1453            174253.     3480.
+##  3 BELGRANO                 3356            173970.     3638.
+##  4 PALERMO                  6862            167991.     3543.
+##  5 COLEGIALES               1395            157209.     3293.
+##  6 RECOLETA                 2695            157205.     3434.
+##  7 RETIRO                    773            146485.     3151.
+##  8 VILLA URQUIZA            2574            144036.     3023.
+##  9 BARRACAS ESTE             693            140141.     2556.
+## 10 VILLA ORTUZAR             511            139132.     2893.
 ## # ℹ 42 more rows</code></pre>
 </div>
 </div>
@@ -533,11 +534,11 @@ ambientes de mayor valor, cuyo monto ascendía a 468.498 usd.</p>
 <pre><code>## # A tibble: 5 × 4
 ##   Barrio        cantidad_deptos valor_promedio_usd dolaresM2
 ##   &lt;fct&gt;                   &lt;int&gt;              &lt;dbl&gt;     &lt;dbl&gt;
-## 1 BELGRANO                 3356            173970.     3638.
-## 2 COLEGIALES               1395            157209.     3293.
-## 3 NUÑEZ                    1453            174253.     3480.
+## 1 PUERTO MADERO             517            468499.     6319.
+## 2 NUÑEZ                    1453            174253.     3480.
+## 3 BELGRANO                 3356            173970.     3638.
 ## 4 PALERMO                  6862            167991.     3543.
-## 5 PUERTO MADERO             517            468499.     6319.</code></pre>
+## 5 COLEGIALES               1395            157209.     3293.</code></pre>
 </div>
 <div id="barrios-con-el-valor-más-bajo-de-departamentos-de-dos-ambientes" class="section level3">
 <h3>Barrios con el valor más bajo de departamentos de dos ambientes</h3>
